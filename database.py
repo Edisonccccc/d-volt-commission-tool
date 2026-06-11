@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Optional
 
-from sqlalchemy import Date, Float, ForeignKey, Integer, String, create_engine
+from sqlalchemy import Date, Float, ForeignKey, Integer, String, create_engine, inspect, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, Session
 
 DATABASE_URL = "sqlite:///commission.db"
@@ -29,6 +29,7 @@ class Employee(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     employment_date: Mapped[Optional[datetime.date]] = mapped_column(Date, nullable=True)
+    gender: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # "male" | "female" | "other"
 
     cycles: Mapped[list[CommissionCycle]] = relationship("CommissionCycle", back_populates="employee")
     assignments: Mapped[list[ProjectAssignment]] = relationship("ProjectAssignment", back_populates="employee")
@@ -121,6 +122,12 @@ DEFAULT_BRACKETS = [
 
 def init_db() -> None:
     Base.metadata.create_all(engine)
+    # Migrate: add gender column to existing databases
+    with engine.connect() as conn:
+        existing_cols = [c["name"] for c in inspect(engine).get_columns("employees")]
+        if "gender" not in existing_cols:
+            conn.execute(text("ALTER TABLE employees ADD COLUMN gender VARCHAR"))
+            conn.commit()
     with Session(engine) as session:
         if session.query(CommissionBracket).count() == 0:
             for b in DEFAULT_BRACKETS:
