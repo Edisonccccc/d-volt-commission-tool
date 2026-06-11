@@ -6,6 +6,10 @@ from database import CommissionBracket, get_session
 
 
 def render():
+    if st.button("← Back to Projects", type="secondary"):
+        st.session_state.page = "projects"
+        st.rerun()
+
     st.header("Commission Bracket Settings")
     st.caption("Define the tiered marginal commission rates applied to cumulative net revenue.")
 

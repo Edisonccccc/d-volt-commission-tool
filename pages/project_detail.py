@@ -222,7 +222,7 @@ def render(project_id: int):
             if sub:
                 st.caption("  ·  ".join(sub))
         with h_right:
-            if st.button("Edit Project", key="edit_proj_toggle"):
+            if st.button("✏️ Edit Project", key="edit_proj_toggle"):
                 st.session_state["editing_project"] = not st.session_state.get("editing_project", False)
 
         m1, m2, m3 = st.columns(3)

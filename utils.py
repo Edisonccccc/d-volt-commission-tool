@@ -27,29 +27,44 @@ def inject_css():
     }}
 
     /* ── Tabs ────────────────────────────────────────────────────────── */
-    .stTabs [data-baseweb="tab-list"] {{
-        gap: 4px;
-        background: {BG_CARD};
-        border-radius: 10px;
-        padding: 4px;
-        border: 1px solid {BORDER_GRAY};
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    [data-testid="stTabsList"],
+    [data-baseweb="tab-list"] {{
+        background: white;
+        border-bottom: 2px solid {BORDER_GRAY};
+        padding: 0;
+        border-radius: 0;
+        gap: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border-top: none;
+        border-left: none;
+        border-right: none;
     }}
-    .stTabs [data-baseweb="tab"] {{
-        border-radius: 7px;
-        padding: 8px 28px;
-        font-weight: 600;
-        font-size: 0.88rem;
-        color: {TEXT_MID};
-        background: transparent;
-        border: none;
+    /* Tab buttons — use role="tab" for cross-version reliability */
+    button[role="tab"] {{
+        border-radius: 0 !important;
+        padding: 14px 28px !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        color: {TEXT_MID} !important;
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 3px solid transparent !important;
+        margin-bottom: -2px !important;
+        transition: color 0.15s ease, border-color 0.15s ease !important;
     }}
-    .stTabs [aria-selected="true"] {{
-        background: {GREEN} !important;
-        color: white !important;
+    button[role="tab"][aria-selected="true"] {{
+        color: {GREEN} !important;
+        border-bottom: 3px solid {GREEN} !important;
+        font-weight: 700 !important;
+        background: transparent !important;
     }}
-    .stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
-    .stTabs [data-baseweb="tab-border"] {{ display: none; }}
+    button[role="tab"]:not([aria-selected="true"]):hover {{
+        color: {TEXT_DARK} !important;
+        background: #F9FAFB !important;
+        border-bottom: 3px solid {BORDER_GRAY} !important;
+    }}
+    [data-baseweb="tab-highlight"],
+    [data-baseweb="tab-border"] {{ display: none !important; }}
 
     /* ── Metrics ─────────────────────────────────────────────────────── */
     [data-testid="metric-container"] {{
@@ -164,15 +179,15 @@ def inject_css():
 
 
 def page_header(title: str, subtitle: str = ""):
-    sub_html = f'<div style="color:#86EFAC;font-size:0.85rem;margin-top:2px;">{subtitle}</div>' if subtitle else ""
+    sub_html = f'<div style="color:#86EFAC;font-size:0.9rem;margin-top:3px;font-weight:400;">{subtitle}</div>' if subtitle else ""
     st.markdown(f"""
     <div style="
         background: linear-gradient(135deg, #14532D 0%, {GREEN} 100%);
-        padding: 1rem 1.75rem;
+        padding: 1.25rem 1.75rem;
         border-radius: 12px;
-        margin-bottom: 1.25rem;
+        margin-bottom: 0.5rem;
     ">
-        <div style="color:white;font-size:1.3rem;font-weight:700;letter-spacing:-0.02em;">{title}</div>
+        <div style="color:white;font-size:2rem;font-weight:800;letter-spacing:-0.03em;line-height:1.2;">{title}</div>
         {sub_html}
     </div>
     """, unsafe_allow_html=True)
